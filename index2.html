@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>Document</title>
+</head>
+
+<body>
+    <h1>World Happiness Study</h1>
+    <h3>FEW 2.5 Erica Naglik</h3>
+    <p>Year: 2019</p>
+    <p>Number of Countries in the Study: 156</p>
+  <h2>Top 10 GDP Per Capita</h2>
+  <div id="GDP"></div>
+
+  <script>
+    // Get a reference to div#content
+    // This is where we will add dynamic elements
+    // const content = document.getElementById('content')
+    const GDP = document.getElementById('GDP')
+
+    fetch('worldhappiness2019.json')
+      .then(res => res.json())
+      .then(json => handleData(json))
+      .catch(err => console.log(err.message))
+
+
+    function handleData(data) {
+      // Get an array of relevant objects from the data
+      const fields = data.map(({
+        fields
+      }) => fields)
+
+      console.log(data)
+
+      const sorted = data.sort((a, b) => {
+          return b["GDP per capita"] - a["GDP per capita"]
+        }).slice(0, 10)
+        
+        console.log(sorted)
+
+      sorted.forEach(country => {
+        const el = document.createElement("div")
+
+        el.innerHTML = (country["Country or region"] + " = " + country["GDP per capita"])
+        document.querySelector("#GDP").appendChild(el)
+
+      })
+
+      // top10.forEach(gdp => {
+      //   document.getElementById("GDP").innerHTML = top10["Country or region"] + " GDP per capita = " + top10[
+      //     "GDP per capita"];
+      // })
+
+
+
+
+      // // CLASS
+      // fields.forEach(country => {
+      //   // make an element
+      //   const el1 = document.createElement('div')
+      //   // attach the element to the dom
+      //   pClass.appendChild(el1)
+      //   el1.style.width = '5px'
+      //   el1.style.height = '5px'
+      //   el1.style.margin = '1px'
+      //   el1.style.borderStyle = 'solid'
+
+      //   const sorted = data.sort((a, b) => {
+      //     return a["GDP per capita"] - b["GDP per capita"]
+      //   })
+
+
+
+    }
+  </script>
+</body>
+
+</html>

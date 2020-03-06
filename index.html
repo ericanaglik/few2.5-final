@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>World Happiness Study</title>
+</head>
+<body>
+<h1>World Happiness Study</h1>
+<h3>FEW 2.5 Erica Naglik</h3>
+<p>Year: 2019</p>
+<p>Number of Countries in the Study: 156</p>
+  <svg id="svg-1" width='1000' height='1000'></svg>
+
+
+
+
+  <script src="https://d3js.org/d3.v5.js"></script>
+  
+  <script>
+
+    
+    
+
+    d3.json("/worldhappiness2019.json")
+      .then(function (data) {
+        console.log(data);
+        console.log(data[0]["Country or region"])
+
+        const sorted = data.sort((a, b) => {
+          return d3.descending(+a["GDP per capita"], +b["GDP per capita"])
+        })
+        const top10 = sorted.slice(0, 10)
+        console.log(top10)
+
+        let yvalue = 0
+        const svg = d3.select('#svg-1')
+        const rowCount = Math.floor(Math.sqrt(data.length))
+        const space = 500 / rowCount
+        const g = svg.selectAll('g')
+				.data(top10)
+
+        const gEnter = g.enter()
+				.append('g')
+				// transform the group (g)
+				.attr('transform', (d, i) => {
+					const x = i % rowCount * space + (space / 2)
+					const y = Math.floor(i / rowCount) * space + (space / 2)
+					return `translate(${x}, ${y})`
+				})
+          
+
+        
+          const text = gEnter.append('text')
+          .text((d, i) => {
+            return "Country or region: " + d["Country or region"] + " GDP per capita = " + d["GDP per capita"];
+          })
+          .attr('text-anchor', 'middle')
+          .attr('alignment-baseline', 'middle')
+          
+          // svg.style('height', `${yvalue + 300}px`)
+
+      });
+
+
+  </script>
+</body>
+</html>
