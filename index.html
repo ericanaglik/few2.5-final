@@ -1,69 +1,418 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta http-equiv="X-UA-Compatible" content="ie=edge">
   <title>World Happiness Study</title>
+  <style>
+    @import url('https://fonts.googleapis.com/css?family=Ubuntu&display=swap');
+
+    body {
+      font-family: 'Ubuntu', sans-serif;
+    }
+
+    .title {
+      text-align: center;
+    }
+
+    .challenge2 {
+      text-align: center;
+    }
+
+    .challenge3 {
+      display: flex;
+      flex-direction: row;
+      justify-content: space-around;
+    }
+
+    h2 {
+      margin-top: 0px;
+    }
+
+    .GDP-container {
+      padding: 10px;
+      border: 1px;
+      border-style: solid;
+      border-radius: 25px;
+    }
+
+    .SS-container {
+      padding: 10px;
+      border: 1px;
+      border-style: solid;
+      border-radius: 25px;
+    }
+
+    .HLE-container {
+      padding: 10px;
+      border: 1px;
+      border-style: solid;
+      border-radius: 25px;
+    }
+
+    .Generosity-container {
+      padding: 10px;
+      border: 1px;
+      border-style: solid;
+      border-radius: 25px;
+    }
+  </style>
 </head>
+
 <body>
-<h1>World Happiness Study</h1>
-<h3>FEW 2.5 Erica Naglik</h3>
-<p>Year: 2019</p>
-<p>Number of Countries in the Study: 156</p>
-  <svg id="svg-1" width='1000' height='1000'></svg>
+  <div class="title">
+    <h1>World Happiness Study</h1>
+    <h3>FEW 2.5 Erica Naglik</h3>
+  </div>
+  <div class="challenge2">
+    <p>Year: 2019</p>
+    <p id=numCountries></p>
+  </div>
 
 
+  <div class="challenge3">
+    <div class="GDP-container">
+      <h2>Top 10 GDP Per Capita</h2>
+      <div id="GDP"></div>
+    </div>
+    <div class="SS-container">
+      <h2>Top 10 Social Support</h2>
+      <div id="SS"></div>
+    </div>
+    <div class="HLE-container">
+      <h2>Top 10 Healthy Life Expectancy</h2>
+      <div id="HLE"></div>
+    </div>
+    <div class="Generosity-container">
+      <h2>Top 10 Generosity</h2>
+      <div id="Generosity"></div>
+    </div>
+  </div>
 
-
-  <script src="https://d3js.org/d3.v5.js"></script>
-  
+  <script src="https://d3js.org/d3.v5.min.js"></script>
   <script>
+    fetch('worldhappiness2019.json')
+      .then(res => res.json())
+      .then(json => handleData(json))
+      .catch(err => console.log(err.message))
 
-    
-    
 
+    function handleData(data) {
+
+
+      // console.log(data)
+
+      /****************************
+       ******** CHALLENGE 2 ********
+       *****************************/
+
+      // USE LENGTH OF ARRAY TO GET NUMBER OF COUNTRIES IN STUDY
+      document.getElementById("numCountries").innerHTML = "Number of Countries in Study: " + data.length;
+
+      /****************************
+       ******** CHALLENGE 3 ********
+       *****************************/
+
+      /**********************
+       ********* GDP *********
+       ***********************/
+
+      // SORT TOP 10 GDP DATA
+      const sortedGDP = data.sort((a, b) => {
+        return b["GDP per capita"] - a["GDP per capita"]
+      }).slice(0, 10)
+
+      // DISPLAY TOP 10 GDP DATA
+      sortedGDP.forEach(country => {
+        const el = document.createElement("div")
+
+        el.innerHTML = (country["Country or region"] + ": " + country["GDP per capita"])
+        document.querySelector("#GDP").appendChild(el)
+      })
+
+      /***********************
+       **** SOCIAL SUPPORT ****
+       ************************/
+
+      // SORT TOP 10 SOCIAL SUPPORT DATA
+      const sortedSS = data.sort((a, b) => {
+        return b["Social support"] - a["Social support"]
+      }).slice(0, 10)
+
+      // DISPLAY TOP 10 SOCIAL SUPPORT DATA
+      sortedSS.forEach(country => {
+        const el2 = document.createElement("div")
+
+        el2.innerHTML = (country["Country or region"] + ": " + country["Social support"])
+        document.querySelector("#SS").appendChild(el2)
+      })
+
+      /*********************************
+       **** HEALTHY LIFE EXPECTANCY ****
+       *********************************/
+
+      // SORT TOP 10 HEALTHY LIFE EXPECTANCY
+      const sortedHLE = data.sort((a, b) => {
+        return b["Healthy life expectancy"] - a["Healthy life expectancy"]
+      }).slice(0, 10)
+
+      // DISPLAY TOP 10 HEALTHY LIFE EXPECTANCY
+      sortedHLE.forEach(country => {
+        const el3 = document.createElement("div")
+
+        el3.innerHTML = (country["Country or region"] + ": " + country["Healthy life expectancy"])
+        document.querySelector("#HLE").appendChild(el3)
+      })
+
+      /*******************
+       **** GENEROSITY ****
+       ********************/
+
+      // SORT TOP 10 GENEROSITY
+      const sortedGenerosity = data.sort((a, b) => {
+        return b["Generosity"] - a["Generosity"]
+      }).slice(0, 10)
+
+      // DISPLAY TOP 10 GENEROSITY
+      sortedGenerosity.forEach(country => {
+        const el4 = document.createElement("div")
+
+        el4.innerHTML = (country["Country or region"] + ": " + country["Generosity"])
+        document.querySelector("#Generosity").appendChild(el4)
+      })
+
+    }
+
+      // set the dimensions and margins of the graph
+      var margin = {
+        top: 20,
+        right: 20,
+        bottom: 30,
+        left: 40
+      },
+      width = 960 - margin.left - margin.right,
+      height = 500 - margin.top - margin.bottom;
+
+    // set the ranges
+    var x = d3.scaleBand()
+      .range([0, width])
+      .padding(0.1);
+    var y = d3.scaleLinear()
+      .range([height, 0]);
+
+    // append the svg object to the body of the page
+    // append a 'group' element to 'svg'
+    // moves the 'group' element to the top left margin
+    var svg = d3.select("body").append("svg")
+      .attr("width", width + margin.left + margin.right)
+      .attr("height", height + margin.top + margin.bottom)
+      .append("g")
+      .attr("transform",
+        "translate(" + margin.left + "," + margin.top + ")");
+
+    var svg2 = d3.select("body").append("svg")
+      .attr("width", width + margin.left + margin.right)
+      .attr("height", height + margin.top + margin.bottom)
+      .append("g")
+      .attr("transform",
+        "translate(" + margin.left + "," + margin.top + ")");
+    
+    var svg3 = d3.select("body").append("svg")
+      .attr("width", width + margin.left + margin.right)
+      .attr("height", height + margin.top + margin.bottom)
+      .append("g")
+      .attr("transform",
+        "translate(" + margin.left + "," + margin.top + ")");
+
+    var svg4 = d3.select("body").append("svg")
+      .attr("width", width + margin.left + margin.right)
+      .attr("height", height + margin.top + margin.bottom)
+      .append("g")
+      .attr("transform",
+        "translate(" + margin.left + "," + margin.top + ")");
+
+    // get the data
     d3.json("/worldhappiness2019.json")
       .then(function (data) {
-        console.log(data);
-        console.log(data[0]["Country or region"])
 
-        const sorted = data.sort((a, b) => {
+      // format the data
+      // data.forEach(function (d) {
+      //   d.sales = +d.sales;
+      // });
+
+      
+
+      const GDP1 = data.sort((a, b) => {
           return d3.descending(+a["GDP per capita"], +b["GDP per capita"])
+      })
+      const sortedGDP1 = GDP1.slice(0, 10)
+
+      const SS1 = data.sort((a, b) => {
+          return d3.descending(+a["Social support"], +b["Social support"])
+      })
+      const sortedSS1 = SS1.slice(0, 10)
+
+      const HLE1 = data.sort((a, b) => {
+          return d3.descending(+a["Healthy life expectancy"], +b["Healthy life expectancy"])
+      })
+      const sortedHLE1 = HLE1.slice(0, 10)
+
+      const Generosity1 = data.sort((a, b) => {
+          return d3.descending(+a["Generosity"], +b["Generosity"])
+      })
+      const sortedGenerosity1 = Generosity1.slice(0, 10)
+
+      // Scale the range of the data in the domains
+      x.domain(sortedGDP1.map(function (d) {
+        return d["Country or region"];
+      }));
+      y.domain([0, d3.max(sortedGDP1, function (d) {
+        return d["GDP per capita"];
+      })]);
+
+      // append the rectangles for the bar chart
+      svg.selectAll(".bar")
+        .data(sortedGDP1)
+        .enter().append("rect")
+        .attr("class", "bar")
+        .attr("x", function (d) {
+          return x(d["Country or region"]);
         })
-        const top10 = sorted.slice(0, 10)
-        console.log(top10)
+        .attr("width", x.bandwidth())
+        .attr("y", function (d) {
+          return y(d["GDP per capita"]);
+        })
+        .attr("height", function (d) {
+          return height - y(d["GDP per capita"]);
+        });
 
-        let yvalue = 0
-        const svg = d3.select('#svg-1')
-        const rowCount = Math.floor(Math.sqrt(data.length))
-        const space = 500 / rowCount
-        const g = svg.selectAll('g')
-				.data(top10)
+      // add the x Axis
+      svg.append("g")
+        .attr("transform", "translate(0," + height + ")")
+        .call(d3.axisBottom(x));
 
-        const gEnter = g.enter()
-				.append('g')
-				// transform the group (g)
-				.attr('transform', (d, i) => {
-					const x = i % rowCount * space + (space / 2)
-					const y = Math.floor(i / rowCount) * space + (space / 2)
-					return `translate(${x}, ${y})`
-				})
-          
-
-        
-          const text = gEnter.append('text')
-          .text((d, i) => {
-            return "Country or region: " + d["Country or region"] + " GDP per capita = " + d["GDP per capita"];
-          })
-          .attr('text-anchor', 'middle')
-          .attr('alignment-baseline', 'middle')
-          
-          // svg.style('height', `${yvalue + 300}px`)
-
-      });
+      // add the y Axis
+      svg.append("g")
+        .call(d3.axisLeft(y));
 
 
+        /* ***********
+        *************
+        *************/
+
+        // Scale the range of the data in the domains
+      x.domain(sortedSS1.map(function (d) {
+        return d["Country or region"];
+      }));
+      y.domain([0, d3.max(sortedSS1, function (d) {
+        return d["Social support"];
+      })]);
+
+      // append the rectangles for the bar chart
+      svg2.selectAll(".bar")
+        .data(sortedSS1)
+        .enter().append("rect")
+        .attr("class", "bar")
+        .attr("x", function (d) {
+          return x(d["Country or region"]);
+        })
+        .attr("width", x.bandwidth())
+        .attr("y", function (d) {
+          return y(d["Social support"]);
+        })
+        .attr("height", function (d) {
+          return height - y(d["Social support"]);
+        });
+
+      // add the x Axis
+      svg2.append("g")
+        .attr("transform", "translate(0," + height + ")")
+        .call(d3.axisBottom(x));
+
+      // add the y Axis
+      svg2.append("g")
+        .call(d3.axisLeft(y));
+
+      /* ***********
+        *************
+        *************/
+
+        // Scale the range of the data in the domains
+        x.domain(sortedHLE1.map(function (d) {
+        return d["Country or region"];
+      }));
+      y.domain([0, d3.max(sortedHLE1, function (d) {
+        return d["Healthy life expectancy"];
+      })]);
+
+      // append the rectangles for the bar chart
+      svg3.selectAll(".bar")
+        .data(sortedHLE1)
+        .enter().append("rect")
+        .attr("class", "bar")
+        .attr("x", function (d) {
+          return x(d["Country or region"]);
+        })
+        .attr("width", x.bandwidth())
+        .attr("y", function (d) {
+          return y(d["Healthy life expectancy"]);
+        })
+        .attr("height", function (d) {
+          return height - y(d["Healthy life expectancy"]);
+        });
+
+      // add the x Axis
+      svg3.append("g")
+        .attr("transform", "translate(0," + height + ")")
+        .call(d3.axisBottom(x));
+
+      // add the y Axis
+      svg3.append("g")
+        .call(d3.axisLeft(y));
+
+      /* ***********
+        *************
+        *************/
+
+        // Scale the range of the data in the domains
+        x.domain(sortedGenerosity1.map(function (d) {
+        return d["Country or region"];
+      }));
+      y.domain([0, d3.max(sortedGenerosity1, function (d) {
+        return d["Generosity"];
+      })]);
+
+      // append the rectangles for the bar chart
+      svg4.selectAll(".bar")
+        .data(sortedGenerosity1)
+        .enter().append("rect")
+        .attr("class", "bar")
+        .attr("x", function (d) {
+          return x(d["Country or region"]);
+        })
+        .attr("width", x.bandwidth())
+        .attr("y", function (d) {
+          return y(d["Generosity"]);
+        })
+        .attr("height", function (d) {
+          return height - y(d["Generosity"]);
+        });
+
+      // add the x Axis
+      svg4.append("g")
+        .attr("transform", "translate(0," + height + ")")
+        .call(d3.axisBottom(x));
+
+      // add the y Axis
+      svg4.append("g")
+        .call(d3.axisLeft(y));
+
+    });
+
+    
   </script>
 </body>
+
 </html>
