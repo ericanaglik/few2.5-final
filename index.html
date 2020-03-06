@@ -25,6 +25,7 @@
       display: flex;
       flex-direction: row;
       justify-content: space-around;
+      margin-bottom: 100px;
     }
 
     h2 {
@@ -185,6 +186,10 @@
 
     }
 
+    /********************
+    **** CHALLENGE 4 ****
+    *********************/
+
       // set the dimensions and margins of the graph
       var margin = {
         top: 20,
@@ -202,9 +207,12 @@
     var y = d3.scaleLinear()
       .range([height, 0]);
 
-    // append the svg object to the body of the page
-    // append a 'group' element to 'svg'
-    // moves the 'group' element to the top left margin
+    
+    /***************************
+    **** SVG FOR ALL GRAPHS ****
+    ***************************/
+
+    
     var svg = d3.select("body").append("svg")
       .attr("width", width + margin.left + margin.right)
       .attr("height", height + margin.top + margin.bottom)
@@ -233,16 +241,13 @@
       .attr("transform",
         "translate(" + margin.left + "," + margin.top + ")");
 
+    /**********************************
+    **** SORT TOP 10 FOR EACH DATA ****
+    **********************************/
+
     // get the data
     d3.json("/worldhappiness2019.json")
       .then(function (data) {
-
-      // format the data
-      // data.forEach(function (d) {
-      //   d.sales = +d.sales;
-      // });
-
-      
 
       const GDP1 = data.sort((a, b) => {
           return d3.descending(+a["GDP per capita"], +b["GDP per capita"])
@@ -264,6 +269,10 @@
       })
       const sortedGenerosity1 = Generosity1.slice(0, 10)
 
+    /***********************
+    **** GDP PER CAPITA ****
+    ************************/
+
       // Scale the range of the data in the domains
       x.domain(sortedGDP1.map(function (d) {
         return d["Country or region"];
@@ -271,6 +280,14 @@
       y.domain([0, d3.max(sortedGDP1, function (d) {
         return d["GDP per capita"];
       })]);
+
+      svg.append("text")
+        .attr("x", (width / 2))             
+        .attr("y", 0 - (margin.top - 15))
+        .attr("text-anchor", "middle")  
+        .style("font-size", "16px") 
+        .style("text-decoration", "underline")  
+        .text("GDP Per Capita");
 
       // append the rectangles for the bar chart
       svg.selectAll(".bar")
@@ -298,9 +315,17 @@
         .call(d3.axisLeft(y));
 
 
-        /* ***********
-        *************
-        *************/
+      /***********************
+      **** SOCIAL SUPPORT ****
+      ************************/
+
+        svg2.append("text")
+        .attr("x", (width / 2))             
+        .attr("y", 0 - (margin.top - 15))
+        .attr("text-anchor", "middle")  
+        .style("font-size", "16px") 
+        .style("text-decoration", "underline")  
+        .text("Social Support");
 
         // Scale the range of the data in the domains
       x.domain(sortedSS1.map(function (d) {
@@ -335,9 +360,17 @@
       svg2.append("g")
         .call(d3.axisLeft(y));
 
-      /* ***********
-        *************
-        *************/
+      /********************************
+      **** HEALTHY LIFE EXPECTANCY ****
+      *********************************/
+
+        svg3.append("text")
+        .attr("x", (width / 2))             
+        .attr("y", 0 - (margin.top - 15))
+        .attr("text-anchor", "middle")  
+        .style("font-size", "16px") 
+        .style("text-decoration", "underline")  
+        .text("Healthy Life Expectancy");
 
         // Scale the range of the data in the domains
         x.domain(sortedHLE1.map(function (d) {
@@ -372,9 +405,17 @@
       svg3.append("g")
         .call(d3.axisLeft(y));
 
-      /* ***********
-        *************
-        *************/
+      /*******************
+      **** GENEROSITY ****
+      ********************/
+
+      svg4.append("text")
+        .attr("x", (width / 2))             
+        .attr("y", 0 - (margin.top - 15))
+        .attr("text-anchor", "middle")  
+        .style("font-size", "16px") 
+        .style("text-decoration", "underline")  
+        .text("Generosity");
 
         // Scale the range of the data in the domains
         x.domain(sortedGenerosity1.map(function (d) {
